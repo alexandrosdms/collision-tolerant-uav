@@ -19,7 +19,7 @@ real_time = true;
 max_time = 20;
 
 % parameters for simulation
-params = sys_params;
+params = new_sys_params;
 
 %% **************************** FIGURES *****************************
 disp('Initializing figures...');
