@@ -14,52 +14,88 @@ function [F, M] = controller(t, state, des_state, params)
 
 %   Using these current and desired states, you have to compute the desired
 %   controls
+%% Controller gains
+k.x = 10;
+k.v = 8;
+k.i = 10;
 
+% Attitude
+k.R = 1.5;
+k.W = 0.35;
+k.I = 10;
 
-% =================== Your code goes here ===================
-% Tuning gains for line and helix
-Kp_p = [30 30 30];
-Kv_p = [400 400 400];
+% Yaw
+k.y = 0.8;
+k.wy = 0.15;
+k.yI = 2;
 
-Kp_a = [800 800 800];
-Kv_a = [1200 1200 1200];
+sigma = params.sigma;
+c1 = params.c1;
+m = params.mass;
+g = params.gravity;
+e3 = [0, 0, 1]';
 
-% Kp_p = [10 10 80];
-% Kv_p = [10 10 35];
-% 
-% Kp_a = [200 200 200];
-% Kv_a = [.1 .1 .1];
-% Givens
-psi_des = des_state.yaw;
-r_des = des_state.yawdot;
-p_des = 0;
-q_des = 0;
+error.pos = state.pos - des_state.pos;
+error.vel = state.vel - des_state.vel;
+A = - k.x * error.pos ...
+    - k.v * error.vel ...
+    - m * g * e3 ...
+    + m * des_state.acc ...
+    - k.i * sat(sigma, ei);
 
-for i = 1:3
-    rddot_des(i) = des_state.acc(i) + Kv_p(i)*(des_state.vel(i)-state.vel(i)) ...
-        + Kp_p(i)*(des_state.pos(i)-state.pos(i));
-end
+ei_dot = error.vel + c1 * error.pos;
+b3 = state.rotm * e3;
+F = -dot(A, b3);
+ea = g * e3 ...
+    - F / m * b3 ...
+    - des_state.acc ...
+    + params.x_delta / m;
+A_dot = - k.x * error.vel ...
+    - k.v * ea ...
+    + m * des_state.x_3dot ...
+    - k.i * satdot(sigma, ei, ei_dot);
 
-phi_des = (rddot_des(1)*sin(psi_des) ...
-            - rddot_des(2)*cos(psi_des))/params.gravity; %14a
+ei_ddot = ea + c1 * error.vel;
+b3_dot = state.rotm * hat(state.omega) * e3;
+f_dot = -dot(A_dot, b3) - dot(A, b3_dot);
+eb = - f_dot / m * b3 - F / m * b3_dot - des_state.x_3dot;
+A_ddot = - k.x * ea ...
+    - k.v * eb ...
+    + m * des_state.x_4dot ...
+    - k.i * satdot(sigma, ei, ei_ddot);
 
-theta_des = (rddot_des(1)*cos(psi_des)...
-            + rddot_des(2)*sin(psi_des))/params.gravity; %14b
+[b3c, b3c_dot, b3c_ddot] = deriv_unit_vector(-A, -A_dot, -A_ddot);
 
-% Inputs
-u1 = params.mass * params.gravity +...
-    params.mass * rddot_des(3);
-    
-u2 = [Kp_a(1)*(phi_des-state.rot(1)) + Kv_a(1)*(p_des-state.omega(1));... % Eq 10
-      Kp_a(2)*(theta_des-state.rot(2)) + Kv_a(2)*(q_des-state.omega(2));
-      Kp_a(3)*(psi_des-state.rot(3)) + Kv_a(3)*(r_des-state.omega(3))];
+A2 = -hat(des_state.b1) * b3c;
+A2_dot = -hat(des_state.b1_dot) * b3c - hat(des_state.b1) * b3c_dot;
+A2_ddot = - hat(des_state.b1_2dot) * b3c ...
+    - 2 * hat(des_state.b1_dot) * b3c_dot ...
+    - hat(des_state.b1) * b3c_ddot;
 
-% Thrust
-F = u1;
+[b2c, b2c_dot, b2c_ddot] = deriv_unit_vector(A2, A2_dot, A2_ddot);
 
-% Moment
-M = params.I*u2;
+b1c = hat(b2c) * b3c;
+b1c_dot = hat(b2c_dot) * b3c + hat(b2c) * b3c_dot;
+b1c_ddot = hat(b2c_ddot) * b3c ...
+    + 2 * hat(b2c_dot) * b3c_dot ...
+    + hat(b2c) * b3c_ddot;
 
-% =================== Your code ends here ===================
+Rc = [b1c, b2c, b3c];
+Rc_dot = [b1c_dot, b2c_dot, b3c_dot];
+Rc_ddot = [b1c_ddot, b2c_ddot, b3c_ddot];
 
+Wc = vee(Rc' * Rc_dot);
+Wc_dot = vee(Rc' * Rc_ddot - hat(Wc)^2);
+
+W3 = dot(R * e3, Rc * Wc);
+W3_dot = dot(R * e3, Rc * Wc_dot) ...
+    + dot(R * hat(W) * e3, Rc * Wc);
+
+% Decoupled Yaw Attitude Controller
+[M, eI_dot, error.R, error.W] = attitude_control( ...
+    R, W, eI, ...
+    Rc, Wc, Wc_dot, ...
+    k, param);
+error.y = 0;
+error.Wy = 0;
 end
