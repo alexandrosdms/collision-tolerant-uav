@@ -23,5 +23,9 @@ params.ctf = 0.0135;
 params.x_delta = [0.5, 0.8, -1];
 param.R_delta = [0.2, 1.0, -0.1]';
 
-
+% Geometric Controller
+params.c1 = 1.5;
+params.sigma = 10;
+params.c2 = 2;
+params.c3 = 2;
 end
