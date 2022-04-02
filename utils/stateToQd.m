@@ -12,4 +12,7 @@ qd.rotm = Rot;
 
 qd.omega = x(7:9);
 
+qd.ei = x(19:21);
+qd.eI = x(22:24);
+
 end

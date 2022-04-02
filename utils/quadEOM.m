@@ -27,6 +27,6 @@ desired_state = trajhandle(t, current_state);
 [F, M, ei_dot, eI_dot] = controlhandle(t, current_state, desired_state, params);
 
 % compute derivative
-sdot = quadEOM_readonly(t, s, F, M,, ei_dot, eI_dot, params);
+sdot = quadEOM_readonly(t, s, F, M, ei_dot, eI_dot, params);
 
 end
