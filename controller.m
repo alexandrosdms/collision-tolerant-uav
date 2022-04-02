@@ -1,4 +1,4 @@
-function [F, M] = controller(t, state, des_state, params)
+function [F, M, ei_dot, eI_dot] = controller(t, state, des_state, params)
 %CONTROLLER  Controller for the quadrotor
 %
 %   state: The current state of the robot with the following fields:
