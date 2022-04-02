@@ -1,11 +1,11 @@
 function [desired_state] = traj_lissajous(t, state)
 % TRAJ_LISSAJOUS generates a lissajous
 
-A = 100;
-B = 100;
-C = 2;
+A = 1;
+B = 1;
+C = -0.2;
 
-d = pi/2 * 0;
+d = pi / 2 * 0;
 
 a = 1;
 b = 2;
@@ -19,10 +19,14 @@ if t >= T
     pos     = [A * sin(a * t + d), B * sin(b * t), alt + C * cos(2 * t)]';
     vel     = zeros(3,1);
     acc     = zeros(3,1);
+    jerk     = zeros(3,1);
+    snap    = zeros(3,1);
     
     desired_state.pos   = pos(:);
     desired_state.vel   = vel(:);
     desired_state.acc   = acc(:);
+    desired_state.jerk  = jerk(:);
+    desired_state.snap  = snap(:);
 else
     pos = [A * sin(a * t + d), B * sin(b * t), alt + C * cos(2 * t)]';
     
@@ -49,12 +53,13 @@ else
     desired_state.snap  = snap(:);
 end
 
-desired_state.b1 = [0, 0, 0];
-desired_state.b1_dot = [0, 0, 0];
-desired_state.b1_2dot = [0, 0, 0];
+% desired_state.b1 = [0, 0, 0];
+% desired_state.b1_dot = [0, 0, 0];
+% desired_state.b1_2dot = [0, 0, 0];
 
-% desired_state.b1 = [cos(w * t), sin(w * t), 0]';
-% desired_state.b1_dot = w * [-sin(w * t), cos(w * t), 0]';
-% desired_state.b1_2dot = w^2 * [-cos(w * t), -sin(w * t), 0]';
+w = 2 * pi / 10;
+desired_state.b1 = [cos(w * t), sin(w * t), 0]';
+desired_state.b1_dot = w * [-sin(w * t), cos(w * t), 0]';
+desired_state.b1_2dot = w^2 * [-cos(w * t), -sin(w * t), 0]';
 
 end
