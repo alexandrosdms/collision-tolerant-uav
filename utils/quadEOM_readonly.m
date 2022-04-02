@@ -1,4 +1,4 @@
-function sdot = quadEOM_readonly(t, s, F, M, params)
+function sdot = quadEOM_readonly(t, s, F, M, ei_dot, eI_dot, params)
 % QUADEOM_READONLY Solve quadrotor equation of motion
 %   quadEOM_readonly calculate the derivative of the state vector
 %
