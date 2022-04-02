@@ -20,8 +20,8 @@ params.arm_length = d;
 % Verify what these signify
 params.ctf = 0.0135;
 % Fixed disturbance
-params.x_delta = [0.5, 0.8, -1];
-param.R_delta = [0.2, 1.0, -0.1]';
+params.x_delta = [0.5, 0.8, -1]';
+params.R_delta = [0.2, 1.0, -0.1]';
 
 % Geometric Controller
 params.c1 = 1.5;
