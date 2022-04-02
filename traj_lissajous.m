@@ -19,6 +19,10 @@ if t >= T
     pos     = [A * sin(a * t + d), B * sin(b * t), alt + C * cos(2 * t)]';
     vel     = zeros(3,1);
     acc     = zeros(3,1);
+    
+    desired_state.pos   = pos(:);
+    desired_state.vel   = vel(:);
+    desired_state.acc   = acc(:);
 else
     pos = [A * sin(a * t + d), B * sin(b * t), alt + C * cos(2 * t)]';
     
@@ -37,16 +41,13 @@ else
     snap = [A * a^4 * sin(a * t + d), ...
         B * b^4 * sin(b * t), ...
         C * c^4 * cos(c * t)]';
+    
+    desired_state.pos   = pos(:);
+    desired_state.vel   = vel(:);
+    desired_state.acc   = acc(:);
+    desired_state.jerk  = jerk(:);
+    desired_state.snap  = snap(:);
 end
-
-yaw = 0;
-yawdot = 0;
-
-desired_state.pos   = pos(:);
-desired_state.vel   = vel(:);
-desired_state.acc   = acc(:);
-desired_state.jerk  = jerk(:);
-desired_state.snap  = snap(:);
 
 desired_state.b1 = 0;
 desired_state.b1_dot = 0;
