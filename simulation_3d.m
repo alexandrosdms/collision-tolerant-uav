@@ -70,7 +70,7 @@ for iter = 1:max_iter
 
     % Initialize quad plot
     if iter == 1
-        pause;
+        % pause;
         subplot(3,3,[1,2,4,5,7,8]);
         QP = QuadPlot(1, x0, 0.1, 0.04, quadcolors(1,:), max_iter, h_3d);
         current_state = stateToQd(x);

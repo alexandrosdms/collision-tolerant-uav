@@ -39,7 +39,7 @@ classdef QuadPlot < handle
             Q.wingspan = wingspan;
             Q.color = color;
             Q.height = height;
-            Q.rot = QuatToRot(Q.state(7:10));
+            Q.rot = reshape(Q.state(7:15),3,3);
             Q.motor = quad_pos(Q.state(1:3), Q.rot, Q.wingspan, Q.height);
             Q.text_dist = Q.wingspan / 3;
             Q.des_state = Q.state(1:6);
