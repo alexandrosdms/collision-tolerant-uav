@@ -87,15 +87,15 @@ Rc_ddot = [b1c_ddot, b2c_ddot, b3c_ddot];
 Wc = vee(Rc' * Rc_dot);
 Wc_dot = vee(Rc' * Rc_ddot - hat(Wc)^2);
 
-W3 = dot(R * e3, Rc * Wc);
-W3_dot = dot(R * e3, Rc * Wc_dot) ...
-    + dot(R * hat(W) * e3, Rc * Wc);
+W3 = dot(state.rotm * e3, Rc * Wc);
+W3_dot = dot(state.rotm * e3, Rc * Wc_dot) ...
+    + dot(state.rotm * hat(state.omega) * e3, Rc * Wc);
 
 % Decoupled Yaw Attitude Controller
 [M, eI_dot, error.R, error.W] = attitude_control( ...
-    R, W, state.eI, ...
+    state.rotm, state.omega, state.eI, ...
     Rc, Wc, Wc_dot, ...
-    k, param);
+    k, params);
 error.y = 0;
 error.Wy = 0;
 end
