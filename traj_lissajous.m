@@ -49,9 +49,9 @@ else
     desired_state.snap  = snap(:);
 end
 
-desired_state.b1 = 0;
-desired_state.b1_dot = 0;
-desired_state.b1_2dot = 0;
+desired_state.b1 = [0, 0, 0];
+desired_state.b1_dot = [0, 0, 0];
+desired_state.b1_2dot = [0, 0, 0];
 
 % desired_state.b1 = [cos(w * t), sin(w * t), 0]';
 % desired_state.b1_dot = w * [-sin(w * t), cos(w * t), 0]';
