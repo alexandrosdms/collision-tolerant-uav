@@ -13,6 +13,7 @@ params.invI = inv(I);
 params.gravity = g;
 params.arm_length = d;
 
+% Save these for when thrust moment limits are introduced to the EOM
 % params.minF = 0.0;
 % params.maxF = 2.0*m*g;
 
