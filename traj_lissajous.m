@@ -29,15 +29,31 @@ else
     acc = [A * a^2 * -sin(a * t + d), ...
         B * b^2 * -sin(b * t), ...
         C * c^2 * -cos(c * t)]';
+
+    jerk = [A * a^3 * -cos(a * t + d), ...
+        B * b^3 * -cos(b * t), ...
+        C * c^3 * sin(c * t)]';
+
+    snap = [A * a^4 * sin(a * t + d), ...
+        B * b^4 * sin(b * t), ...
+        C * c^4 * cos(c * t)]';
 end
 
 yaw = 0;
 yawdot = 0;
 
-desired_state.pos = pos(:);
-desired_state.vel = vel(:);
-desired_state.acc = acc(:);
-desired_state.yaw = yaw;
-desired_state.yawdot = yawdot;
+desired_state.pos   = pos(:);
+desired_state.vel   = vel(:);
+desired_state.acc   = acc(:);
+desired_state.jerk  = jerk(:);
+desired_state.snap  = snap(:);
+
+desired_state.b1 = 0;
+desired_state.b1_dot = 0;
+desired_state.b1_2dot = 0;
+
+% desired_state.b1 = [cos(w * t), sin(w * t), 0]';
+% desired_state.b1_dot = w * [-sin(w * t), cos(w * t), 0]';
+% desired_state.b1_2dot = w^2 * [-cos(w * t), -sin(w * t), 0]';
 
 end
