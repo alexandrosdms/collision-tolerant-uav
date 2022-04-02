@@ -17,6 +17,11 @@ params.arm_length = d;
 % params.minF = 0.0;
 % params.maxF = 2.0*m*g;
 
-param.ctf = 0.0135;
+% Verify what these signify
+params.ctf = 0.0135;
+% Fixed disturbance
+params.x_delta = [0.5, 0.8, -1];
+param.R_delta = [0.2, 1.0, -0.1]';
+
 
 end
