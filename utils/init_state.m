@@ -1,5 +1,5 @@
 function [ s ] = init_state( start, yaw )
-%INIT_STATE Initialize 13 x 1 state vector
+%INIT_STATE Initialize 24 x 1 state vector
 
 s     = zeros(13,1);
 % phi0   = 0.0;
