@@ -1,5 +1,5 @@
 function [qd] = stateToQd(x)
-%Converts qd struct used in hardware to x vector used in simulation
+%Converts x vector used in simulation to qd struct used in hardware
 % x is 1 x 13 vector of state variables [pos vel quat omega]
 % qd is a struct including the fields pos, vel, euler, and omega
 
