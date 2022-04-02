@@ -48,7 +48,12 @@ desired_state.acc   = acc(:);
 desired_state.jerk  = jerk(:);
 desired_state.snap  = snap(:);
 
-desired_state.yaw = yaw;
-desired_state.yawdot = yawdot;
+desired_state.b1 = 0;
+desired_state.b1_dot = 0;
+desired_state.b1_2dot = 0;
+
+% desired_state.b1 = [cos(w * t), sin(w * t), 0]';
+% desired_state.b1_dot = w * [-sin(w * t), cos(w * t), 0]';
+% desired_state.b1_2dot = w^2 * [-cos(w * t), -sin(w * t), 0]';
 
 end
