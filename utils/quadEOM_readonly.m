@@ -20,13 +20,13 @@ e3 = [0, 0, 1]';
 m = params.mass;
 I = params.I;
 
-[~, v, R, W, ~, ~] = split_to_states(s);
+state = stateToQd(s);
 
-xdot = v;
+xdot = state.vel;
 vdot = params.gravity * e3 ...
-    - F / m * R * e3 + params.x_delta / m;
-Wdot = I \ (-hat(W) * I * W + M + params.R_delta);
-Rdot = R * hat(W);
+    - F / m * state.rotm * e3 + params.x_delta / m;
+Wdot = I \ (-hat(state.omega) * I * state.omega + M + params.R_delta);
+Rdot = state.rotm * hat(state.omega);
 
 sdot=[xdot; vdot; Wdot; reshape(Rdot,9,1); ei_dot; eI_dot];
 end
