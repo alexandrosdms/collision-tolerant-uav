@@ -1,19 +1,58 @@
-function [F, M, ei_dot, eI_dot] = controller(t, state, des_state, params)
+% 
+% Copyright (c) 2020 Flight Dynamics and Control Lab
+% 
+% Permission is hereby granted, free of charge, to any person obtaining a
+% copy of this software and associated documentation files (the 
+% "Software"), to deal in the Software without restriction, including 
+% without limitation the rights to use, copy, modify, merge, publish, 
+% distribute, sublicense, and/or sell copies of the Software, and to permit
+% persons to whom the Software is furnished to do so, subject to the 
+% following conditions:
+% 
+% The above copyright notice and this permission notice shall be included
+%  in all copies or substantial portions of the Software.
+% 
+% THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+% OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF 
+% MERCHANTABILITY,FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. 
+% IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY 
+% CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
+% TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
+% SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+function [F, M, ei_dot, eI_dot, error, calculated] = controller(t, state, des_state, params)
 %CONTROLLER  Controller for the quadrotor
 %
+% Position controller that uses decoupled-yaw controller as the attitude
+% controller
+% 
+%   Caluclates the force and moments required for a UAV to reach a given 
+%   set of desired position commands using a decoupled-yaw controller
+%   defined in https://ieeexplore.ieee.org/document/8815189.
+%
+%   Inputs:
 %   state: The current state of the robot with the following fields:
 %   state.pos = [x; y; z], state.vel = [x_dot; y_dot; z_dot],
-%   state.rot = [phi; theta; psi], state.omega = [p; q; r]
+%   state.omega = [p; q; r], state.rotm = [r11:r13,r21:r23,r31:r33]',
+%   state.ei = [ei1; ei2; ei3], state.eI = [eI1; eI2; eI3]
 %
 %   des_state: The desired states are:
 %   des_state.pos = [x; y; z], des_state.vel = [x_dot; y_dot; z_dot],
-%   des_state.acc = [x_ddot; y_ddot; z_ddot], des_state.yaw,
-%   des_state.yawdot
+%   des_state.acc = [x_ddot; y_ddot; z_ddot],
+%   des_state.jerk = [x_3dot; y_3dot; z_3dot],
+%   des_state.snap = [x_4dot; y_4dot; z_4dot],
+%   des_state.b1 = [b1_1; b1_2; b1_3], des_state.b1_dot, des_state.b1_2dot
 %
 %   params: robot parameters
+%  Outputs:
+%    F: (scalar) required motor force
+%    M: (3x1 matrix) control moment required to reach desired conditions
+%    ei_dot: (3x1 matrix) position integral change rate
+%    eI_dot: (3x1 matrix) attitude integral change rate
+%    error: (struct) errors for attitude and position control (for data
+%    logging)
+%    calculated: (struct) calculated desired commands (for data logging)
 
-%   Using these current and desired states, you have to compute the desired
-%   controls
 %% Controller gains
 k.x = 10;
 k.v = 8;
@@ -98,4 +137,16 @@ W3_dot = dot(state.rotm * e3, Rc * Wc_dot) ...
     k, params);
 error.y = 0;
 error.Wy = 0;
+
+%% Saving data
+calculated.b3 = b3c;
+calculated.b3_dot = b3c_dot;
+calculated.b3_ddot = b3c_ddot;
+calculated.b1 = b1c;
+calculated.R = Rc;
+calculated.W = Wc;
+calculated.W_dot = Wc_dot;
+calculated.W3 = dot(state.rotm * e3, Rc * Wc);
+calculated.W3_dot = dot(state.rotm * e3, Rc * Wc_dot) ...
+    + dot(state.rotm * hat(state.omega) * e3, Rc * Wc);
 end
