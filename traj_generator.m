@@ -59,6 +59,8 @@ else
         desired_state.pos = waypoints0(:,1);
         desired_state.vel = zeros(3,1);
         desired_state.acc = zeros(3,1);
+        desired_state.jerk = zeros(3,1);
+        desired_state.snap = zeros(3,1);
     else
         scale = t/d0(t_index-1);
         segment_index = t_index-1;
@@ -85,9 +87,17 @@ else
         desired_state.acc = [polyT(8,2,scale)*coffx((segment_index-1)*8+1:segment_index*8,1);...
             polyT(8,2,scale)*coffy((segment_index-1)*8+1:segment_index*8,1);...
             polyT(8,2,scale)*coffz((segment_index-1)*8+1:segment_index*8,1)].* (1/d0(segment_index)) ;
+        desired_state.jerk = [polyT(8,3,scale)*coffx((segment_index-1)*8+1:segment_index*8,1);...
+            polyT(8,3,scale)*coffy((segment_index-1)*8+1:segment_index*8,1);...
+            polyT(8,3,scale)*coffz((segment_index-1)*8+1:segment_index*8,1)].* (1/d0(segment_index)) ;
+        desired_state.snap = [polyT(8,4,scale)*coffx((segment_index-1)*8+1:segment_index*8,1);...
+            polyT(8,4,scale)*coffy((segment_index-1)*8+1:segment_index*8,1);...
+            polyT(8,4,scale)*coffz((segment_index-1)*8+1:segment_index*8,1)].* (1/d0(segment_index)) ;
     end
-    desired_state.yaw = 0;
-    desired_state.yawdot = 0;
+    w = 2 * pi / 10;
+    desired_state.b1 = [cos(w * t), sin(w * t), 0]';
+    desired_state.b1_dot = w * [-sin(w * t), cos(w * t), 0]';
+    desired_state.b1_2dot = w^2 * [-cos(w * t), -sin(w * t), 0]';
 end
 %
 
