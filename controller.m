@@ -53,6 +53,9 @@ function [F, M, ei_dot, eI_dot, error, calculated] = controller(t, state, des_st
 %    logging)
 %    calculated: (struct) calculated desired commands (for data logging)
 
+% Use this flag to enable or disable the decoupled-yaw attitude controller.
+use_decoupled = true;
+
 %% Controller gains
 k.x = 10;
 k.v = 8;
@@ -130,13 +133,24 @@ W3 = dot(state.rotm * e3, Rc * Wc);
 W3_dot = dot(state.rotm * e3, Rc * Wc_dot) ...
     + dot(state.rotm * hat(state.omega) * e3, Rc * Wc);
 
-% Decoupled Yaw Attitude Controller
-[M, eI_dot, error.R, error.W] = attitude_control( ...
-    state.rotm, state.omega, state.eI, ...
-    Rc, Wc, Wc_dot, ...
-    k, params);
-error.y = 0;
-error.Wy = 0;
+%% Run attitude controller
+if use_decoupled
+    [M, eI_dot, error.b, error.W, error.y, error.Wy] ...
+        = attitude_control_decoupled_yaw( ...
+        state.rotm, state.omega, state.eI, ...
+        b3c, b3c_dot, b3c_ddot, b1c, W3, W3_dot, ...
+        k, params);
+    
+    % Only used for comparison between two controllers
+    error.R = 1 / 2 * vee(Rc' * state.rotm - state.rotm' * Rc);
+else
+    [M, eI_dot, error.R, error.W] = attitude_control( ...
+        state.rotm, state.omega, state.eI, ...
+        Rc, Wc, Wc_dot, ...
+        k, params);
+    error.y = 0;
+    error.Wy = 0;
+end
 
 %% Saving data
 calculated.b3 = b3c;
