@@ -79,7 +79,7 @@ for iter = 1:max_iter
     if iter == 1
         % pause;
         subplot(3,3,[1,2,4,5,7,8]);
-        QP = QuadPlot(1, x0, 0.1, 0.04, quadcolors(1,:), max_iter, h_3d);
+        QP = QuadPlot(1, x0, 0.1, 0.4, quadcolors(1,:), max_iter, h_3d);
         current_state = stateToQd(x);
         desired_state = trajhandle(time, current_state);
         QP.UpdateQuadPlot(x, [desired_state.pos; desired_state.vel], time);
