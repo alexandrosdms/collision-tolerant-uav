@@ -29,6 +29,12 @@ if video
 end
 h_fig = figure;
 h_3d = subplot(3,3,[1,2,4,5,7,8]);
+sz = [852 480]; % figure size
+screensize = get(0,'ScreenSize');
+xpos = ceil((screensize(3)-sz(1))/2); % center the figure on the screen horizontally
+ypos = ceil((screensize(4)-sz(2))/2); % center the figure on the screen vertically
+set(h_fig, 'Position', [xpos ypos sz])
+set(gca, 'Box', 'on');
 axis equal
 grid on
 view(3);
