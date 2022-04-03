@@ -47,7 +47,8 @@ time     = 0; % current time
 err = []; % runtime errors
 
 % Get start and stop position
-des_start = trajhandle(0, []);
+%des_start = trajhandle(0, []);
+des_start.pos = [-2, -2, -2]'
 des_stop  = trajhandle(inf, []);
 stop_pos  = des_stop.pos;
 x0    = init_state(des_start.pos, 0);
