@@ -14,8 +14,8 @@ params.gravity = g;
 params.arm_length = d;
 
 % Save these for when thrust moment limits are introduced to the EOM
-% params.minF = 0.0;
-% params.maxF = 2.0*m*g;
+params.minF = 0.0;
+params.maxF = 2.0*m*g;
 
 % Verify what these signify
 params.ctf = 0.0135;
