@@ -7,5 +7,5 @@ A routine for mentaining stability after collision and possibly exploting the dy
 * Collision Recovery
 * Collision Exploitation
 
-#Results
+# Results
  [![ High Agility Geometric Control Demo](https://img.https://youtu.be/Z7najJbqqLw/0.jpg)](https://youtu.be/Z7najJbqqLw)
