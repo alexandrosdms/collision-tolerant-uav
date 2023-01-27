@@ -1,6 +1,6 @@
 # Collision-tolerant UAV Simulator
 This repository contains supporting code and a report for a MATLAB-based collision simulator for a quadrotor UAV.
-A routine for mentaining stability after collision and possibly exploting the dynamics of the collision is also applied.
+A routine for maintaining stability after collision and possibly exploiting the dynamics of the collision is also applied.
 # Topics
 * Geometric Control
 * Hybrid Systems
